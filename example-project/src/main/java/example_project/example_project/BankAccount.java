@@ -14,6 +14,11 @@ public class BankAccount {
 		this.balance = balance;
 	}
 
+	public BankAccount(String accountNumber) {
+		this.accountNumber = accountNumber;
+		this.balance = 0d;
+	}
+
 	/*
 	 * In order to check my operations As a bank client I want to see the history
 	 * (operation, date, amount, balance) of my operations
