@@ -17,12 +17,13 @@ public class BankAccountTest extends TestCase {
 	
 	@Test
 	public void testInitialBalance() {
-		assertEquals(myAccount.getBalance(), 500d);
+		BankAccount myAccount = new BankAccount("FR7630001007941234567890185");
+		assertEquals(myAccount.getBalance(), 0d);
 		assertEquals(myAccount.getState(), AccountState.POSITIVE_BALANCE);
 	}
 	
 	@Test
-	public void testScenario1() {
+	public void testDeposit100euro() {
 		myAccount.deposit(100d, new Date());
 		assertEquals(myAccount.getBalance(), 600d);
 		assertEquals(myAccount.getState(), AccountState.POSITIVE_BALANCE);
@@ -30,59 +31,47 @@ public class BankAccountTest extends TestCase {
 	}
 	
 	@Test
-	public void testScenario2() {
-		myAccount.deposit(100d, new Date());
-		assertEquals(myAccount.getBalance(), 600d);
-		assertEquals(myAccount.getState(), AccountState.POSITIVE_BALANCE);
+	public void testWithDraw50euro() {
 		myAccount.withdraw(50d, new Date());
-		assertEquals(myAccount.getBalance(), 550d);
+		assertEquals(myAccount.getBalance(), 450d);
 		assertEquals(myAccount.getState(), AccountState.POSITIVE_BALANCE);
-		assertEquals(myAccount.getOperations().size(),2);
+		assertEquals(myAccount.getOperations().size(),1);
 	}
 	
 	@Test
-	public void testScenario3() {
+	public void testDeposit100euroAndWithDraw50euro() {
 		myAccount.deposit(100d, new Date());
 		assertEquals(myAccount.getBalance(), 600d);
 		assertEquals(myAccount.getState(), AccountState.POSITIVE_BALANCE);
 		myAccount.withdraw(50d, new Date());
 		assertEquals(myAccount.getBalance(), 550d);
 		assertEquals(myAccount.getState(), AccountState.POSITIVE_BALANCE);
+	}
+	
+	@Test
+	public void testCaseofNegativeBalance() {
 		myAccount.withdraw(650d, new Date());
-		assertEquals(myAccount.getBalance(), -100d);
+		assertEquals(myAccount.getBalance(), -150d);
 		assertEquals(myAccount.getState(), AccountState.NEGATIVE_BALANCE);
 		
-		int sizeListOperations = myAccount.getOperations().size();
-		assertEquals(sizeListOperations,3);
-		
-		// L'historique des opérations.
-		assertEquals(myAccount.getOperations().get(0).getAmount(), 100d);
-		assertEquals(myAccount.getOperations().get(0).getBalance(), 600d);
-		System.out.println(myAccount.getOperations().get(0).getDate());
-		assertEquals(myAccount.getOperations().get(0).getType(), OperationTypes.DEPOSIT);
-		
-		assertEquals(myAccount.getOperations().get(1).getAmount(), 50d);
-		assertEquals(myAccount.getOperations().get(1).getBalance(), 550d);
-		System.out.println(myAccount.getOperations().get(1).getDate());
-		assertEquals(myAccount.getOperations().get(1).getType(), OperationTypes.WITHDRAW);
-		
-		assertEquals(myAccount.getOperations().get(2).getAmount(), 650d);
-		assertEquals(myAccount.getOperations().get(2).getBalance(), -100d);
-		System.out.println(myAccount.getOperations().get(2).getDate());
-		assertEquals(myAccount.getOperations().get(2).getType(), OperationTypes.WITHDRAW);
-		
-		
-		assertEquals(myAccount.getOperations().get(sizeListOperations-1).getBalance(), myAccount.getBalance());
-		
-		for(final Operation operation : myAccount.getOperations()) {
-			System.out.println(operation.getDate() + " " + operation.getType().toString() + " " + operation.getAmount().toString());
-		}
 	}
 	
 	@Test
-	public void testScenario4() {
+	public void testGetHistoryofOperations() {
+		myAccount.withdraw(650d, new Date());
+		assertEquals(myAccount.getBalance(), -150d);
+		assertEquals(myAccount.getState(), AccountState.NEGATIVE_BALANCE);
+		int sizeListOperations = myAccount.getOperations().size();
+		assertEquals(sizeListOperations,1);
 		
+		// L'historique des opérations.
+		assertEquals(myAccount.getOperations().get(0).getAmount(), 650d);
+		assertEquals(myAccount.getOperations().get(0).getBalance(), -150d);
+		assertEquals(myAccount.getOperations().get(0).getType(), OperationTypes.WITHDRAW);
 	}
+	
+	
+
 	
 
 }
